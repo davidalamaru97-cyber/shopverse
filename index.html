@@ -1,0 +1,1355 @@
+<!DOCTYPE html>
+<html lang="ro">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopVerse</title>
+
+<style>
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+    color: white;
+    background: linear-gradient(135deg, #09090b, #312e81, #581c87);
+}
+
+header {
+    text-align: center;
+    padding: 25px 15px;
+    background: rgba(0,0,0,.45);
+}
+
+.logo {
+    font-size: 44px;
+    font-weight: bold;
+    color: #c4b5fd;
+}
+
+.coins {
+    margin-top: 10px;
+    color: #facc15;
+    font-size: 22px;
+}
+
+.profile {
+    margin-top: 10px;
+    color: #ddd6fe;
+}
+
+.section {
+    max-width: 1100px;
+    margin: 30px auto;
+    padding: 20px;
+}
+
+.card {
+    background: rgba(255,255,255,.1);
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+
+.center {
+    text-align: center;
+}
+
+h2 {
+    text-align: center;
+}
+
+button {
+    border: none;
+    border-radius: 12px;
+    padding: 12px 20px;
+    margin: 7px;
+    background: #8b5cf6;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background: #7c3aed;
+    transform: scale(1.03);
+}
+
+input {
+    padding: 12px;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    margin: 5px;
+}
+
+.shop {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(210px,1fr));
+    gap: 20px;
+}
+
+.product {
+    background: rgba(255,255,255,.1);
+    border-radius: 20px;
+    padding: 20px;
+    text-align: center;
+}
+
+.product:hover {
+    transform: translateY(-5px);
+}
+
+.product-icon {
+    font-size: 60px;
+}
+
+.price {
+    color: #facc15;
+    font-size: 18px;
+}
+
+#coinGameArea {
+    position: relative;
+    height: 280px;
+    background: rgba(0,0,0,.3);
+    border-radius: 15px;
+    overflow: hidden;
+}
+
+#gameCoin {
+    position: absolute;
+    display: none;
+    font-size: 45px;
+    cursor: pointer;
+}
+
+#clickScore {
+    font-size: 25px;
+    color: #facc15;
+}
+
+.quiz-question {
+    font-size: 21px;
+    text-align: center;
+    margin: 20px;
+}
+
+.quiz-buttons {
+    text-align: center;
+}
+
+.memory-grid {
+    display: grid;
+    grid-template-columns: repeat(4,70px);
+    gap: 10px;
+    justify-content: center;
+    margin: 20px;
+}
+
+.memory-card {
+    width: 70px;
+    height: 70px;
+    background: #4c1d95;
+    border-radius: 12px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 35px;
+    cursor: pointer;
+}
+
+.inventory {
+    line-height: 2;
+    color: #ddd6fe;
+}
+
+.achievement {
+    background: rgba(255,255,255,.08);
+    padding: 12px;
+    margin: 8px;
+    border-radius: 10px;
+}
+
+.locked {
+    opacity: .45;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #a1a1aa;
+}
+
+@media(max-width:600px) {
+    .logo {
+        font-size: 34px;
+    }
+
+    .section {
+        padding: 12px;
+    }
+
+    .memory-grid {
+        grid-template-columns: repeat(4,60px);
+    }
+
+    .memory-card {
+        width: 60px;
+        height: 60px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+
+<div class="logo">
+🛍️ ShopVerse
+</div>
+
+<div class="profile">
+👤 <span id="playerName">Jucător</span>
+<br>
+⭐ Nivel <span id="level">1</span>
+&nbsp; | &nbsp;
+✨ XP <span id="xp">0</span>/100
+</div>
+
+<div class="coins">
+🪙 <span id="coins">1000</span> monede
+</div>
+
+</header>
+
+
+<!-- PROFIL -->
+
+<div class="section">
+
+<div class="card center">
+
+<h2>👤 Profilul meu</h2>
+
+<input id="nameInput" placeholder="Scrie nickname-ul">
+
+<button onclick="saveName()">
+Salvează numele
+</button>
+
+<p>
+Numele tău:
+<strong id="profileName">Jucător</strong>
+</p>
+
+</div>
+
+</div>
+
+
+<!-- JOCURI -->
+
+<div class="section">
+
+<h2>🎮 Jocuri</h2>
+
+
+<!-- PRINDE MONEDA -->
+
+<div class="card center">
+
+<h2>🎯 Prinde moneda</h2>
+
+<p>Ai 30 de secunde să prinzi cât mai multe!</p>
+
+<p>
+⏱️ <span id="coinTime">30</span>
+secunde
+</p>
+
+<p>
+🏆 Scor:
+<span id="coinScore">0</span>
+</p>
+
+<button onclick="startCoinGame()">
+🚀 Începe
+</button>
+
+<div id="coinGameArea">
+
+<div id="gameCoin" onclick="catchCoin()">
+🪙
+</div>
+
+</div>
+
+</div>
+
+
+<!-- CLICK CHALLENGE -->
+
+<div class="card center">
+
+<h2>⚡ Click Challenge</h2>
+
+<p>Ai 10 secunde. Apasă cât de repede poți!</p>
+
+<p>
+Clickuri:
+<span id="clickScore">0</span>
+</p>
+
+<p>
+Timp:
+<span id="clickTime">10</span>
+</p>
+
+<button onclick="startClickGame()">
+🚀 Start
+</button>
+
+<button onclick="doClick()">
+👆 CLICK!
+</button>
+
+</div>
+
+
+<!-- QUIZ -->
+
+<div class="card">
+
+<h2>🧠 Quiz</h2>
+
+<div id="quizQuestion" class="quiz-question">
+Apasă începe pentru a juca.
+</div>
+
+<div id="quizAnswers" class="quiz-buttons">
+</div>
+
+<div class="center">
+
+<button onclick="startQuiz()">
+🧠 Începe Quiz
+</button>
+
+</div>
+
+</div>
+
+
+<!-- MYSTERY BOX -->
+
+<div class="card center">
+
+<h2>🎁 Mystery Box</h2>
+
+<p>Poți primi între 50 și 1000 de monede!</p>
+
+<button onclick="openBox()">
+🎁 Deschide
+</button>
+
+<p id="boxResult"></p>
+
+</div>
+
+
+<!-- MEMORY -->
+
+<div class="card center">
+
+<h2>🃏 Memory</h2>
+
+<p>Găsește toate perechile!</p>
+
+<div id="memoryGrid" class="memory-grid">
+</div>
+
+<button onclick="startMemory()">
+🔄 Joc nou
+</button>
+
+</div>
+
+</div>
+
+
+<!-- MAGAZIN -->
+
+<div class="section">
+
+<h2>🛒 Magazin</h2>
+
+<div class="shop" id="shop">
+</div>
+
+</div>
+
+
+<!-- INVENTAR -->
+
+<div class="section">
+
+<div class="card">
+
+<h2>🎒 Inventarul meu</h2>
+
+<div id="inventoryList" class="inventory">
+Nu ai cumpărat nimic.
+</div>
+
+</div>
+
+</div>
+
+
+<!-- REALIZARI -->
+
+<div class="section">
+
+<div class="card">
+
+<h2>🏆 Realizări</h2>
+
+<div id="achievements">
+</div>
+
+</div>
+
+</div>
+
+
+<footer>
+ShopVerse 🎮 — toate cumpărăturile sunt virtuale.
+</footer>
+
+
+<script>
+
+/* =========================
+   SALVARE
+========================= */
+
+let savedCoins = localStorage.getItem("shopverseCoins");
+
+let coins = savedCoins !== null
+    ? Number(savedCoins)
+    : 1000;
+
+let savedInventory =
+    localStorage.getItem("shopverseInventory");
+
+let inventory = savedInventory
+    ? JSON.parse(savedInventory)
+    : [];
+
+let playerName =
+    localStorage.getItem("shopverseName")
+    || "Jucător";
+
+let xp =
+    Number(localStorage.getItem("shopverseXP"))
+    || 0;
+
+let level =
+    Number(localStorage.getItem("shopverseLevel"))
+    || 1;
+
+
+function saveGame() {
+
+    localStorage.setItem(
+        "shopverseCoins",
+        coins
+    );
+
+    localStorage.setItem(
+        "shopverseInventory",
+        JSON.stringify(inventory)
+    );
+
+    localStorage.setItem(
+        "shopverseName",
+        playerName
+    );
+
+    localStorage.setItem(
+        "shopverseXP",
+        xp
+    );
+
+    localStorage.setItem(
+        "shopverseLevel",
+        level
+    );
+
+}
+
+
+/* =========================
+   AFISARE
+========================= */
+
+function updateDisplay() {
+
+    document.getElementById("coins")
+        .textContent = coins;
+
+    document.getElementById("playerName")
+        .textContent = playerName;
+
+    document.getElementById("profileName")
+        .textContent = playerName;
+
+    document.getElementById("xp")
+        .textContent = xp;
+
+    document.getElementById("level")
+        .textContent = level;
+
+}
+
+
+function addCoins(amount) {
+
+    coins += amount;
+
+    updateDisplay();
+
+    saveGame();
+
+}
+
+
+function addXP(amount) {
+
+    xp += amount;
+
+    while (xp >= 100) {
+
+        xp -= 100;
+
+        level++;
+
+        coins += 250;
+
+        alert(
+            "🎉 LEVEL UP!\n\n" +
+            "Ai ajuns la nivelul " +
+            level +
+            "!\n" +
+            "+250 🪙"
+        );
+
+    }
+
+    updateDisplay();
+
+    saveGame();
+
+}
+
+
+/* =========================
+   PROFIL
+========================= */
+
+function saveName() {
+
+    let input =
+        document.getElementById("nameInput");
+
+    let name =
+        input.value.trim();
+
+    if (name.length > 0) {
+
+        playerName = name;
+
+        updateDisplay();
+
+        saveGame();
+
+        alert("👤 Numele a fost salvat!");
+
+    }
+
+}
+
+
+/* =========================
+   PRODUSE
+========================= */
+
+const products = [
+
+["📱","Telefon Ultra",300],
+["💻","Laptop Gaming",700],
+["🎧","Căști Premium",150],
+["⌚","Ceas de Lux",450],
+["👟","Adidași Cool",250],
+["🕶️","Ochelari VIP",200],
+["💎","Diamant Rar",800],
+["👕","Tricou Designer",180],
+["🧢","Șapcă Limited",120],
+["🎮","Consolă Gaming",900],
+["🖥️","Monitor Ultra",650],
+["⌨️","Tastatură RGB",350],
+["🖱️","Mouse Gaming",220],
+["📷","Cameră Pro",600],
+["🎸","Chitară",500],
+["🚲","Bicicletă",750],
+["🏍️","Motocicletă",3000],
+["🚗","Mașină Sport",5000],
+["🏠","Casă Virtuală",10000],
+["🚀","Navă Spațială",25000],
+["👑","Coroană Legendary",50000],
+["🛸","UFO Secret",100000]
+
+];
+
+
+function loadShop() {
+
+    let shop =
+        document.getElementById("shop");
+
+    products.forEach(function(product) {
+
+        let div =
+            document.createElement("div");
+
+        div.className = "product";
+
+        div.innerHTML = `
+
+            <div class="product-icon">
+                ${product[0]}
+            </div>
+
+            <h3>
+                ${product[1]}
+            </h3>
+
+            <p class="price">
+                ${product[2]} 🪙
+            </p>
+
+            <button
+                onclick="buyProduct('${product[1]}',${product[2]})">
+                🛒 Cumpără
+            </button>
+
+        `;
+
+        shop.appendChild(div);
+
+    });
+
+}
+
+
+function buyProduct(name, price) {
+
+    if (coins >= price) {
+
+        coins -= price;
+
+        inventory.push(name);
+
+        addXP(10);
+
+        updateDisplay();
+
+        updateInventory();
+
+        saveGame();
+
+        alert(
+            "🎉 Ai cumpărat " +
+            name +
+            "!"
+        );
+
+        checkAchievements();
+
+    } else {
+
+        alert(
+            "😢 Nu ai suficiente monede!"
+        );
+
+    }
+
+}
+
+
+function updateInventory() {
+
+    let list =
+        document.getElementById("inventoryList");
+
+    if (inventory.length === 0) {
+
+        list.textContent =
+            "Nu ai cumpărat nimic.";
+
+        return;
+
+    }
+
+    list.innerHTML =
+        inventory
+        .map(item => "✅ " + item)
+        .join("<br>");
+
+}
+
+
+/* =========================
+   PRINDE MONEDA
+========================= */
+
+let coinGameRunning = false;
+
+let coinScore = 0;
+
+let coinTime = 30;
+
+let coinTimer;
+
+
+function startCoinGame() {
+
+    if (coinGameRunning) return;
+
+    coinGameRunning = true;
+
+    coinScore = 0;
+
+    coinTime = 30;
+
+    document.getElementById(
+        "coinScore"
+    ).textContent = 0;
+
+    document.getElementById(
+        "coinTime"
+    ).textContent = 30;
+
+    document.getElementById(
+        "gameCoin"
+    ).style.display = "block";
+
+    moveGameCoin();
+
+    coinTimer =
+        setInterval(function() {
+
+            coinTime--;
+
+            document.getElementById(
+                "coinTime"
+            ).textContent = coinTime;
+
+            if (coinTime <= 0) {
+
+                clearInterval(coinTimer);
+
+                coinGameRunning = false;
+
+                document.getElementById(
+                    "gameCoin"
+                ).style.display = "none";
+
+                let reward =
+                    coinScore * 10;
+
+                addCoins(reward);
+
+                addXP(coinScore);
+
+                alert(
+                    "🏆 Joc terminat!\n\n" +
+                    "Scor: " +
+                    coinScore +
+                    "\n" +
+                    "+" +
+                    reward +
+                    " 🪙"
+                );
+
+            }
+
+        },1000);
+
+}
+
+
+function moveGameCoin() {
+
+    if (!coinGameRunning) return;
+
+    let area =
+        document.getElementById(
+            "coinGameArea"
+        );
+
+    let coin =
+        document.getElementById(
+            "gameCoin"
+        );
+
+    let x =
+        Math.random() *
+        (area.clientWidth - 60);
+
+    let y =
+        Math.random() *
+        (area.clientHeight - 60);
+
+    coin.style.left =
+        x + "px";
+
+    coin.style.top =
+        y + "px";
+
+}
+
+
+function catchCoin() {
+
+    if (!coinGameRunning) return;
+
+    coinScore++;
+
+    document.getElementById(
+        "coinScore"
+    ).textContent = coinScore;
+
+    moveGameCoin();
+
+}
+
+
+/* =========================
+   CLICK CHALLENGE
+========================= */
+
+let clickRunning = false;
+
+let clickScore = 0;
+
+let clickTime = 10;
+
+let clickTimer;
+
+
+function startClickGame() {
+
+    if (clickRunning) return;
+
+    clickRunning = true;
+
+    clickScore = 0;
+
+    clickTime = 10;
+
+    document.getElementById(
+        "clickScore"
+    ).textContent = 0;
+
+    document.getElementById(
+        "clickTime"
+    ).textContent = 10;
+
+    clickTimer =
+        setInterval(function() {
+
+            clickTime--;
+
+            document.getElementById(
+                "clickTime"
+            ).textContent =
+                clickTime;
+
+            if (clickTime <= 0) {
+
+                clearInterval(clickTimer);
+
+                clickRunning = false;
+
+                let reward =
+                    clickScore * 5;
+
+                addCoins(reward);
+
+                addXP(clickScore);
+
+                alert(
+                    "⚡ Ai făcut " +
+                    clickScore +
+                    " clickuri!\n\n+" +
+                    reward +
+                    " 🪙"
+                );
+
+            }
+
+        },1000);
+
+}
+
+
+function doClick() {
+
+    if (!clickRunning) return;
+
+    clickScore++;
+
+    document.getElementById(
+        "clickScore"
+    ).textContent =
+        clickScore;
+
+}
+
+
+/* =========================
+   QUIZ
+========================= */
+
+const questions = [
+
+{
+    question:
+        "Care este capitala României?",
+    answers:
+        ["București","Paris","Roma"],
+    correct: 0
+},
+
+{
+    question:
+        "Câte zile are o săptămână?",
+    answers:
+        ["5","7","10"],
+    correct: 1
+},
+
+{
+    question:
+        "Care este Planeta Roșie?",
+    answers:
+        ["Marte","Venus","Jupiter"],
+    correct: 0
+},
+
+{
+    question:
+        "Cât este 10 + 5?",
+    answers:
+        ["12","15","20"],
+    correct: 1
+},
+
+{
+    question:
+        "Câte continente există în modelul folosit în România?",
+    answers:
+        ["5","6","7"],
+    correct: 2
+}
+
+];
+
+let currentQuestion = 0;
+
+
+function startQuiz() {
+
+    currentQuestion = 0;
+
+    showQuestion();
+
+}
+
+
+function showQuestion() {
+
+    let q =
+        questions[currentQuestion];
+
+    document.getElementById(
+        "quizQuestion"
+    ).textContent =
+        q.question;
+
+    let answers =
+        document.getElementById(
+            "quizAnswers"
+        );
+
+    answers.innerHTML = "";
+
+    q.answers.forEach(
+        function(answer,index) {
+
+            let button =
+                document.createElement(
+                    "button"
+                );
+
+            button.textContent =
+                answer;
+
+            button.onclick =
+                function() {
+
+                    checkAnswer(index);
+
+                };
+
+            answers.appendChild(
+                button
+            );
+
+        }
+    );
+
+}
+
+
+function checkAnswer(answer) {
+
+    let q =
+        questions[currentQuestion];
+
+    if (answer === q.correct) {
+
+        addCoins(50);
+
+        addXP(20);
+
+        alert(
+            "✅ Corect!\n+50 🪙"
+        );
+
+    } else {
+
+        alert(
+            "❌ Greșit!"
+        );
+
+    }
+
+    currentQuestion++;
+
+    if (
+        currentQuestion >=
+        questions.length
+    ) {
+
+        document.getElementById(
+            "quizQuestion"
+        ).textContent =
+            "🎉 Quiz terminat!";
+
+        document.getElementById(
+            "quizAnswers"
+        ).innerHTML = "";
+
+    } else {
+
+        showQuestion();
+
+    }
+
+}
+
+
+/* =========================
+   MYSTERY BOX
+========================= */
+
+function openBox() {
+
+    let rewards =
+        [50,100,200,500,1000];
+
+    let reward =
+        rewards[
+            Math.floor(
+                Math.random() *
+                rewards.length
+            )
+        ];
+
+    addCoins(reward);
+
+    addXP(5);
+
+    document.getElementById(
+        "boxResult"
+    ).textContent =
+        "🎉 Ai primit " +
+        reward +
+        " 🪙!";
+
+}
+
+
+/* =========================
+   MEMORY
+========================= */
+
+let memoryCards = [];
+
+let firstCard = null;
+
+let secondCard = null;
+
+let lockMemory = false;
+
+let matched = 0;
+
+
+function startMemory() {
+
+    const symbols = [
+        "🍎","🍎",
+        "💎","💎",
+        "🎮","🎮",
+        "🚀","🚀"
+    ];
+
+    memoryCards =
+        symbols.sort(
+            () => Math.random() - 0.5
+        );
+
+    firstCard = null;
+
+    secondCard = null;
+
+    lockMemory = false;
+
+    matched = 0;
+
+    let grid =
+        document.getElementById(
+            "memoryGrid"
+        );
+
+    grid.innerHTML = "";
+
+    memoryCards.forEach(
+        function(symbol,index) {
+
+            let card =
+                document.createElement(
+                    "div"
+                );
+
+            card.className =
+                "memory-card";
+
+            card.textContent =
+                "❓";
+
+            card.onclick =
+                function() {
+
+                    flipMemory(
+                        card,
+                        symbol
+                    );
+
+                };
+
+            grid.appendChild(card);
+
+        }
+    );
+
+}
+
+
+function flipMemory(card,symbol) {
+
+    if (
+        lockMemory ||
+        card === firstCard
+    ) return;
+
+    card.textContent =
+        symbol;
+
+    if (!firstCard) {
+
+        firstCard = card;
+
+        return;
+
+    }
+
+    secondCard = card;
+
+    lockMemory = true;
+
+    if (
+        firstCard.textContent ===
+        secondCard.textContent
+    ) {
+
+        matched++;
+
+        firstCard = null;
+
+        secondCard = null;
+
+        lockMemory = false;
+
+        if (matched === 4) {
+
+            addCoins(300);
+
+            addXP(50);
+
+            alert(
+                "🏆 Ai terminat Memory!\n+300 🪙"
+            );
+
+        }
+
+    } else {
+
+        setTimeout(
+            function() {
+
+                firstCard.textContent =
+                    "❓";
+
+                secondCard.textContent =
+                    "❓";
+
+                firstCard = null;
+
+                secondCard = null;
+
+                lockMemory = false;
+
+            },
+            700
+        );
+
+    }
+
+}
+
+
+/* =========================
+   REALIZARI
+========================= */
+
+function checkAchievements() {
+
+    let achievements = [
+
+        {
+            name:
+                "🛒 Primul cumpărător",
+            condition:
+                inventory.length >= 1
+        },
+
+        {
+            name:
+                "🛍️ Colecționar",
+            condition:
+                inventory.length >= 5
+        },
+
+        {
+            name:
+                "💰 Bogat",
+            condition:
+                coins >= 5000
+        },
+
+        {
+            name:
+                "⭐ Nivel 5",
+            condition:
+                level >= 5
+        }
+
+    ];
+
+    let box =
+        document.getElementById(
+            "achievements"
+        );
+
+    box.innerHTML = "";
+
+    achievements.forEach(
+        function(a) {
+
+            let div =
+                document.createElement(
+                    "div"
+                );
+
+            div.className =
+                "achievement";
+
+            if (a.condition) {
+
+                div.textContent =
+                    "🏆 " + a.name;
+
+            } else {
+
+                div.classList.add(
+                    "locked"
+                );
+
+                div.textContent =
+                    "🔒 " + a.name;
+
+            }
+
+            box.appendChild(div);
+
+        }
+    );
+
+}
+
+
+/* =========================
+   PORNIRE
+========================= */
+
+updateDisplay();
+
+updateInventory();
+
+checkAchievements();
+
+loadShop();
+
+startMemory();
+
+</script>
+
+</body>
+</html>
